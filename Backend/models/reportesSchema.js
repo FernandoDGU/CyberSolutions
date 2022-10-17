@@ -7,8 +7,8 @@ const reportesSchema = mongoose.Schema({
         required:[true, "El nombre es requerido"]
     },
     startDate:{
-        type:String, 
-        required:[true, "La fecha de inicio es requerida"]
+        type: Date,
+        default: Date.now
     },
     description:{
         type:String,
@@ -22,8 +22,7 @@ const reportesSchema = mongoose.Schema({
         type: String,
     },
     endDate:{
-        type:String, 
-        required: [true, "La fecha de finalización es requerida"]
+        type: Date
     }, 
     _sucursal:{
         type: mongoose.Schema.Types.ObjectId,
@@ -34,6 +33,7 @@ const reportesSchema = mongoose.Schema({
         ref: "categorias"
     }
 });
+
 
 const Reportes = mongoose.model("reportes", reportesSchema);
 module.exports = Reportes;

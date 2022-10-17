@@ -15,11 +15,12 @@ const comentariosSchema = mongoose.Schema({
         required:[true, "El contenido es requerido"]
     },
     date:{
-        type:String,
-        required:[true, "La fecha es requerida"]
+        type: Date,
+        default: Date.now
     }
 
 });
+
 
 const Comentarios = mongoose.model("comentarios", comentariosSchema);
 module.exports = Comentarios;
