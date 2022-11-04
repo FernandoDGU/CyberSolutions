@@ -1,14 +1,17 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Container, Grid, Paper, ThemeProvider, Typography } from '@mui/material'
 import LoggedBar from '../Components/Navbar/LoggedBar'
 import Chart from '../Components/Home/Chart'
+import TicketTable from '../Components/Home/TicketTable'
+import InfoTickets from '../Components/Home/InfoTickets'
+import ChartBar from '../Components/Home/ChartBar'
 
 export default function Home() {
   return (
     
-    <Grid>
+    <Fragment >
         <LoggedBar/>
-        <Container maxWidth="lg" sx={{mt: 4, mb: 4}}>
+        <Container maxWidth="xl" sx={{mt: 4, mb: 4}}>
         <Grid container spacing={3}>
 
         <Grid item xs={12} md={8} lg={9}>
@@ -17,10 +20,11 @@ export default function Home() {
                     p: 2,
                     display: 'flex',
                     flexDirection: 'column',
-                    height: 240,
+                    height: 280,
                   }}
                 >
-                  <Chart></Chart>
+                  <Typography variant='h5'>Inventario</Typography>
+                  <ChartBar/>
                 </Paper>
         </Grid>
        
@@ -29,22 +33,21 @@ export default function Home() {
                   sx={{
                     p: 2,
                     display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
+                    flexDirection: 'column'
                   }}
                 >
-                 bbb
+                 <InfoTickets/>
                 </Paper>
         </Grid>
 
         <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  ccc
+                  <TicketTable/>
                 </Paper>
         </Grid>
 
         </Grid>
         </Container>
-    </Grid>
+    </Fragment>
   )
 }

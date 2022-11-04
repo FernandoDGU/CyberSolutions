@@ -72,8 +72,8 @@ export default function Chart() {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Line type="monotone" dataKey="Creados" stroke="#8884d8" activeDot={{ r: 8 }} />
-          <Line type="monotone" dataKey="Cerrados" stroke="#82ca9d" />
+          <Line type="monotone" dataKey="Creados" stroke="Green" activeDot={{ r: 8 }} />
+          <Line type="monotone" dataKey="Cerrados" stroke="Blue" />
           <Line type="monotone" dataKey="Abiertos" stroke="#829dca" />
         </LineChart>
       </ResponsiveContainer>

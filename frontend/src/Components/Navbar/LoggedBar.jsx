@@ -2,14 +2,17 @@ import * as React from 'react';
 
 import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, Avatar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const pages = ['Ver reportes', 'Ver inventario', 'Crear reporte'];
-const settings = ['Perfil', 'Salir'];
+const settings = ['Perfil', 'Crear usuario', 'Salir'];
 
 export default function LoggedBar() {
 
     const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -18,12 +21,43 @@ export default function LoggedBar() {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = () => {
+  const handleCloseNavMenu = page => () => {
+    
     setAnchorElNav(null);
+    switch(page){
+      case 'Ver reportes':
+        navigate('/ver-tickets');
+      break;
+
+      case 'Ver inventario':
+        navigate('/ver-inventarios');
+      break;
+
+      case 'Crear reporte':
+        navigate('/crear-reporte');
+      break;
+
+      default:
+    }
   };
 
-  const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = setting => () => {
     setAnchorElUser(null);
+    switch(setting){
+      case 'Perfil':
+        navigate('/perfil');
+      break;
+
+      case 'Salir':
+        navigate('/iniciar-sesion');
+      break;
+
+      case 'Crear usuario':
+        navigate('/registrar-usuario');
+      break;
+
+      default:
+    }
   };
 
   return (
@@ -78,7 +112,7 @@ export default function LoggedBar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem key={page} onClick={handleCloseNavMenu(page)}>
                   <Typography textAlign="center" >{page}</Typography>
                 </MenuItem>
               ))}
@@ -88,7 +122,7 @@ export default function LoggedBar() {
             variant="h5"
             noWrap
             component="a"
-            href=""
+            href="/"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -106,7 +140,7 @@ export default function LoggedBar() {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={handleCloseNavMenu(page)}
                 sx={{ m: 2, color: 'white', display: 'block', fontWeight: 'bold'}}
               >
                 {page}
@@ -137,7 +171,7 @@ export default function LoggedBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={handleCloseUserMenu(setting)}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
