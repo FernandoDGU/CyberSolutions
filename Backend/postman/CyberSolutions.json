@@ -680,6 +680,72 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "getByCategory",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/reporte/category/53cb6b9b4f4ddef1ad47f946",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"reporte",
+								"category",
+								"53cb6b9b4f4ddef1ad47f946"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getLast5",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/reporte/reporte/last5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"reporte",
+								"reporte",
+								"last5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCounts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/reporte/reporte/counts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"reporte",
+								"reporte",
+								"counts"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},

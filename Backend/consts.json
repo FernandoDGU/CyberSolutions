@@ -1,5 +1,5 @@
 {
 
-  "DBCONNECTION": "mongodb://localhost:27017/cyberSolutions"
+  "DBCONNECTION": "mongodb://127.0.0.1/cyberSolutions"
   
 }

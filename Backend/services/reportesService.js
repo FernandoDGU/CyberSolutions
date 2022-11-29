@@ -122,6 +122,47 @@ class ReportesService {
     }
   }
 
+  async findReporteByCategory(id) {
+    try {
+      const reportes = await ReportesModel.find({
+        _category: id
+      });
+      if (!reportes)
+        throw boom.notFound('No se ha encontrado coincidencia');
+      return reportes;
+
+    } catch (error) {
+      throw boom.conflict("Error: " + error.message)
+    }
+  }
+
+  async findLast5() {
+    try {
+      const reportes = await ReportesModel.find().sort({startDate:-1}).limit(5);
+      if (!reportes)
+        throw boom.notFound('No se ha encontrado coincidencia');
+      return reportes;
+
+    } catch (error) {
+      throw boom.conflict("Error: " + error.message)
+    }
+  }
+
+  async counts() {
+    try {
+      const reporterAbiertos = await ReportesModel.find({state:"abierto"}).count();
+      const reporterCerrados = await ReportesModel.find({state:"cerrado"}).count();
+      let reportes = {
+        abiertos: reporterAbiertos,
+        cerrados: reporterCerrados
+      }
+      return reportes;
+
+    } catch (error) {
+      throw boom.conflict("Error: " + error.message)
+    }
+  }
+
 }
 
 
