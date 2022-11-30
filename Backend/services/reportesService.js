@@ -16,7 +16,7 @@ class ReportesService {
   async createDB(data) {
     const model = new ReportesModel(data);
     await model.save();
-    return data;
+    return model;
   }
 
   async findOneDB(id) {
@@ -24,7 +24,7 @@ class ReportesService {
 
       const reporte = await ReportesModel.findOne({
         _id: id
-      });
+      }).populate('_user _sucursal _category');
       if (!reporte)
         throw boom.notFound('Reporte no encontrado');
       return reporte;
@@ -80,7 +80,7 @@ class ReportesService {
     try {
       const reportes = await ReportesModel.find({
         _sucursal: id
-      });
+      }).sort({"_id" : -1}).populate("_user _category");
       if (!reportes)
         throw boom.notFound('No se ha encontrado coincidencia');
       return reportes;
@@ -115,6 +115,50 @@ class ReportesService {
       });
       if (!reportes)
         throw boom.notFound('No se ha encontrado coincidencias');
+      return reportes;
+
+    } catch (error) {
+      throw boom.conflict("Error: " + error.message)
+    }
+  }
+
+  async findReporteByCategory(idCat, idSuc) {
+    try {
+      const reportes = await ReportesModel.find({
+        _category: idCat,
+        _sucursal: idSuc
+      }).sort({"_id" : -1}).populate("_user _category");
+      if (!reportes)
+        throw boom.notFound('No se ha encontrado coincidencia');
+      return reportes;
+
+    } catch (error) {
+      throw boom.conflict("Error: " + error.message)
+    }
+  }
+
+  async findLast5(idSuc) {
+    try {
+      const reportes = await ReportesModel.find({_sucursal: idSuc}).sort({startDate:-1}).limit(5).populate("_user _category");
+      if (!reportes)
+        throw boom.notFound('No se ha encontrado coincidencia');
+      return reportes;
+
+    } catch (error) {
+      throw boom.conflict("Error: " + error.message)
+    }
+  }
+
+  async counts(idSuc) {
+    try {
+      const reportesAbiertos = await ReportesModel.find({state:"abierto", _sucursal: idSuc}).count();
+      const reportesCerrados = await ReportesModel.find({state:"cerrado", _sucursal: idSuc}).count();
+      const reportesTotales = await ReportesModel.find({_sucursal: idSuc}).count();
+      let reportes = {
+        abiertos: reportesAbiertos,
+        cerrados: reportesCerrados,
+        totales: reportesTotales
+      }
       return reportes;
 
     } catch (error) {

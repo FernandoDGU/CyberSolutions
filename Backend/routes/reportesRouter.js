@@ -127,4 +127,49 @@ router.post('/rango', async (req, res, next) => {
     }
 });
 
+///////////////////////// Get by Category
+router.get('/category/:idCategory/sucursal/:idSucursal', async (req, res, next) => {
+    try {
+        const { idCategory, idSucursal } = req.params;
+        const reportes = await service.findReporteByCategory(idCategory, idSucursal);
+        res.json({
+            'success': true,
+            'message': 'Reportes encontrados',
+            'data': reportes
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+///////////////////////// Get last 5
+router.get('/last5/sucursal/:idSucursal', async (req, res, next) => {
+    try {
+        const {  idSucursal } = req.params;
+        const reportes = await service.findLast5(idSucursal);
+        res.json({
+            'success': true,
+            'message': 'Reportes encontrados',
+            'data': reportes
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+///////////////////////// Get counts 
+router.get('/counts/sucursal/:idSucursal', async (req, res, next) => {
+    try {
+        const { idSucursal } = req.params;
+        const reportes = await service.counts(idSucursal);
+        res.json({
+            'success': true,
+            'message': 'Reportes contados',
+            'data': reportes
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
 module.exports = router;

@@ -1,7 +1,7 @@
 import { Grid, Paper, Typography } from '@mui/material'
 import React, { Fragment } from 'react'
 
-export default function Comment() {
+export default function Comment(props) {
   return (
     <Fragment >
         <Paper
@@ -19,18 +19,18 @@ export default function Comment() {
         alignItems="center">
         <Grid item xs={6}>
         <Typography variant='h6'>
-            Darien Sánchez
+            {props.com._user.name}
         </Typography>
         </Grid>
         <Grid item xs={6}>
-        <Typography variant='subtitle2' textAlign={"end"}>
+        {/* <Typography variant='subtitle2' textAlign={"end"}>
             2022/10/23
-        </Typography>
+        </Typography> */}
         </Grid>
         </Grid>
         
         <Typography m={1}>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nesciunt eligendi, maxime natus eveniet aperiam esse nulla praesentium beatae blanditiis in aut ullam sed aspernatur sit temporibus tempora? Esse, aperiam! Ducimus.
+            {props.com.content}
         </Typography>
                 </Paper>
         

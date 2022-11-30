@@ -1,7 +1,21 @@
 import { Grid, Paper, Typography } from '@mui/material'
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
+import { useState } from 'react'
+import { getInfoReportes } from '../../Services/ReporteService';
 
-export default function InfoTickets() {
+export default function InfoTickets(props) {
+    const [infoTickets, setInfoTickets] = useState({});
+
+    async function getInfoReportesFunction(){
+        const res = await getInfoReportes(props.sucursal);
+        setInfoTickets(res.data);
+    }
+
+    useEffect(()=>{
+        getInfoReportesFunction()
+    },[])
+
+
   return (
     <Fragment>
         <Grid
@@ -27,7 +41,7 @@ export default function InfoTickets() {
                         Tickets Abiertos:
                     </Typography>
                     <Typography variant='h5' gutterBottom fontWeight={"bold"}>
-                        12900912
+                        {infoTickets.abiertos}
                     </Typography>
                 </Paper>
                 
@@ -47,7 +61,7 @@ export default function InfoTickets() {
                 </Typography>
 
                 <Typography gutterBottom fontWeight={"bold"}>
-                    345354
+                {infoTickets.cerrados}
                 </Typography>
                 </Paper>
                 
@@ -66,7 +80,7 @@ export default function InfoTickets() {
                     Tickets Creados:
                 </Typography>
                 <Typography  gutterBottom fontWeight={"bold"}>
-                    45345345
+                {infoTickets.totales}
                 </Typography>
                 </Paper>
                 

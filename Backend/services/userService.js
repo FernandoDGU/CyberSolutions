@@ -14,9 +14,20 @@ class UserService {
   }
 
   async createDB(data) {
-    const model = new UserModel(data);
-    await model.save();
-    return data;
+    try {
+      const user = await UserModel.findOne({
+        email: data.email
+      });
+      if (user)
+        throw boom.conflict('Ya existe un usuario con ese correo.');
+
+      const model = new UserModel(data);
+      await model.save();
+      return model;
+    } catch (error) {
+      throw boom.conflict("Error: " + error.message)
+    }
+    
   }
 
   async findOneDB(id) {
@@ -24,7 +35,7 @@ class UserService {
 
       const user = await UserModel.findOne({
         _id: id
-      });
+      }).populate('_sucursal');
       if (!user)
         throw boom.notFound('Usuario no encontrado');
       return user;
@@ -76,9 +87,9 @@ class UserService {
       const user = await UserModel.findOne({
         email: userP.email,
         password: userP.password
-      });
+      }).populate('_sucursal');
       if (!user)
-        throw boom.notFound('No se ha encontrado coincidencia');
+        throw boom.notFound('El correo o contraseña introducidas están equivocadas.');
       return user;
 
     } catch (error) {

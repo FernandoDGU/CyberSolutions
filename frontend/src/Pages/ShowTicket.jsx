@@ -1,20 +1,133 @@
-import { Button, Grid, Pagination, Paper, Typography } from '@mui/material'
+import { Button, Grid, Pagination, Paper, TextField, Typography } from '@mui/material'
 import { Container } from '@mui/system'
 import React, { Fragment } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import Footer from '../Components/Footer'
 import LoggedBar from '../Components/Navbar/LoggedBar'
 import Comment from '../Components/ShowTicket/Comment'
 import CreateComment from '../Components/ShowTicket/CreateComment'
 import TicketData from '../Components/ShowTicket/TicketData'
+import { createComentario, getComentarioByReporte } from '../Services/ComentarioService'
+import { getReporteFromId, updateReporte } from '../Services/ReporteService'
+import { getFromId } from '../Services/UserServices'
+import CookieManagement from '../Utils/CookieManagement'
+
+const cookie = new CookieManagement()
 
 export default function ShowTicket() {
+  const [user, setUser] = useState({});
+  const [reporte, setReporte] = useState({});
   const navigate = useNavigate();
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams((search));
+  const [comment, setComment] = useState({
+    _reportes: "",
+    _user: "",
+    content: ""
+    });
+  const [comments, setComments] = useState([]);
+  const itemsPerPage = 5;
+  const [page, setPage] = React.useState(1);
+  const [noOfPages, setNoOfPages] = React.useState(1);
+  const [countComment, setCountComment] = useState(0);
+
+    const handleComment = (event) => {
+        setComment({
+          ...comment,
+          content: event.target.value
+        });
+      };
+
+      const handleChange = (event, value) => {
+        setPage(value);
+    };
+    
+    async function createCommentFunction(){
+      const res = createComentario(comment);
+      setCountComment(countComment + 1)
+      setComment({
+        ...comment,
+        content: ""
+      })
+    }
+
+      const createCommentHandle = () => {
+        createCommentFunction()
+      }
+
+    async function updateTicketFunction(){
+      const ticketUpdated = {
+        name: reporte.name,
+        description: reporte.description,
+        state: "cerrado"
+      }
+      setReporte({
+        ...reporte,
+        state: "cerrado"
+      })
+      const res = await updateReporte(ticketUpdated, searchParams.get("id"));
+    }
+
+    const closeTicket = () => {
+      updateTicketFunction()
+    }
+
   const navigateURL = url => () => {
     navigate(url);
   }
+
+  async function getFromIdFunction(id){
+    const res = await getFromId(id);
+    setUser(res.data);
+  }
+
+  async function getReporteFromIdFunction(id){
+    const res = await getReporteFromId(id);
+    setReporte(res.data);
+
+  }
+
+  async function getComentariosByReporteFunction(id){
+    const res = await getComentarioByReporte(id);
+    if(res.data){
+      setComments(res.data);
+      setNoOfPages(Math.ceil(res.data.length / itemsPerPage));
+    }
+    
+  }
+
+  useEffect(()=>{
+    const id = cookie.getCookie("id");
+    if(id){
+      getFromIdFunction(id);
+      getReporteFromIdFunction(searchParams.get("id"))
+      getComentariosByReporteFunction(searchParams.get("id"))
+      setComment({
+        ...comment,
+        _reportes: searchParams.get("id"),
+        _user: id
+      });
+    }else{
+      navigate('/iniciar-sesion');
+    }
+  },[])
+
+  useEffect(()=>{
+    getComentariosByReporteFunction(searchParams.get("id"))
+  },[countComment])
+
+
+  if (!Object.keys(user).length && !Object.keys(reporte).length && !Object.keys(comments).length) return (<h1></h1>)
+
+  if (!reporte._user && !reporte._sucursal && !reporte._category) return (<h1></h1>)
+
+
+
   return (
     <Fragment>
-        <LoggedBar/>
+        <LoggedBar user={user} />
         <Container maxWidth="xl" sx={{mt: 4, mb: 4}}>
             <Grid container spacing={3}>
 
@@ -28,7 +141,7 @@ export default function ShowTicket() {
                   }}
                 >
                   <Typography variant="h4">
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempora, non.
+                    {reporte.name}
                   </Typography>
                 </Paper>
                 <Paper
@@ -40,8 +153,48 @@ export default function ShowTicket() {
                   }}
                 >
                   <Typography variant="body1">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus laudantium, atque tempora earum reprehenderit iure ipsa. Perspiciatis ea pariatur sapiente praesentium beatae. Iure unde quis quasi amet fugit explicabo temporibus, cum voluptatibus aut expedita, neque excepturi suscipit voluptas. Voluptate minus soluta, quis debitis recusandae aut. Odit, nulla voluptatem sequi suscipit repellendus cupiditate possimus iusto doloribus. Dolorem magnam accusamus temporibus nemo voluptates! Minus tempore enim soluta at et, assumenda sunt ullam numquam suscipit nulla? Architecto soluta itaque dicta velit delectus esse exercitationem omnis, ipsam at a, in ipsum rem odit quo natus nam necessitatibus suscipit maiores, repellat laboriosam quasi labore. Obcaecati aliquid tempora blanditiis natus corporis provident porro reprehenderit nemo optio exercitationem, iste, repellat tempore eligendi. Delectus vero cupiditate, doloribus ab natus similique quae rem, expedita commodi impedit unde atque totam fuga harum incidunt consectetur fugit quaerat alias veniam. Optio fugit quos ea sapiente, quas quasi quis. Sit, non adipisci aspernatur animi maxime, tempore perspiciatis rem, consequuntur nesciunt eius illo? Ratione tenetur soluta officiis. Quae beatae, similique suscipit ea nemo possimus illo, sequi assumenda velit corrupti est! Perferendis quasi minus id facilis nostrum, optio excepturi omnis molestias fugiat, dolor ad officia consectetur totam recusandae impedit necessitatibus! Nostrum quidem, natus quod repellat, asperiores, fugiat minima quisquam odit velit consectetur sunt dolore animi voluptatem corporis est! Explicabo dicta tempore nostrum quod eaque hic dignissimos iusto nisi inventore, aspernatur aliquam recusandae. Quam eum cupiditate dolores at iste, provident ratione ullam sed, quod amet autem adipisci eligendi inventore minima aspernatur accusamus, officia cumque architecto odit quo debitis ipsa quaerat excepturi! Eum, temporibus? A non blanditiis magni soluta amet ut numquam nesciunt omnis repellat, reprehenderit saepe porro dignissimos perferendis aperiam sint placeat accusantium incidunt! Earum asperiores, fugiat excepturi dicta obcaecati adipisci accusamus accusantium possimus perspiciatis rerum? Earum possimus quod sit. Soluta repudiandae repellat minima sed ea!
+                    {reporte.description}
                   </Typography>
+                </Paper>
+
+                <Grid container justifyContent={"center"} alignItems={"center"} sx={{mt:5}}>
+                  <Grid item xs={10}>
+                  <TextField
+                id="outlined-multiline-flexible"
+                label="Escribe un comentario..."
+                multiline
+                maxRows={4}
+                variant={"filled"}
+                value={comment.content}
+                onChange={handleComment}
+                fullWidth
+              />
+                  </Grid>
+                  <Grid item xs={7} m={3}>
+                  <Button variant="contained" fullWidth onClick={createCommentHandle}>Comentar</Button>
+              </Grid>
+              </Grid>
+
+              {
+                comments.slice((page - 1) * itemsPerPage, page * itemsPerPage).map((com, index) => (
+                  <Comment key={index} com={com} />
+                ))
+                }
+                 <Paper
+                  sx={{
+                    p: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
+                 <Pagination
+                  count={noOfPages}
+                  page={page}
+                  onChange={handleChange}
+                  showFirstButton
+                  showLastButton
+                  defaultPage={1}
+                  sx={{margin:"auto"}} color="primary" />
                 </Paper>
             </Grid>
 
@@ -54,36 +207,24 @@ export default function ShowTicket() {
                     height: 400,
                   }}
                 >
-                 <TicketData></TicketData>
-                 <Button sx={{marginTop: '30px'}} variant='contained' color='warning' onClick={navigateURL('/editar-reporte')}>Editar</Button>
-                 <Button sx={{marginTop: '30px'}} variant='contained' color='secondary'>Cerrar Reporte</Button>
+                 <TicketData reporte={reporte} numComentarios={comments.length} ></TicketData>
+                 {
+                    user._id === reporte._user._id || user.userType === 1 ? <Button sx={{marginTop: '30px'}} variant='contained' color='warning' onClick={navigateURL('/editar-reporte?id=' + reporte._id)}>Editar</Button> : <Typography></Typography>
+                 }
+                 {
+                    (user._id === reporte._user._id || user.userType === 1) && reporte.state !== "cerrado" ? <Button sx={{marginTop: '30px'}} variant='contained' color='secondary' onClick={closeTicket}>Cerrar Reporte</Button>  : <Typography></Typography>
+                 }
+                 
                 </Paper>
-            </Grid>
-
-            <Grid item xs={12}>
-                  <CreateComment></CreateComment>
             </Grid>
 
             <Grid item xs={12} lg={10}>
                 
-                 <Comment></Comment>
-                 <Comment></Comment>
-                 <Comment></Comment>
-                 <Comment></Comment>
-                 <Comment></Comment>
-                 <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                  }}
-                >
-                 <Pagination sx={{margin:"auto"}} count={10} color="primary" />
-                </Paper>
+                 
             </Grid>
                   
             </Grid>
-
+                 <Footer sucursal={user._sucursal.name} />
         </Container>
     </Fragment>
   )

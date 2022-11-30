@@ -16,6 +16,8 @@ import EditBranchOffice from './Pages/EditBranchOffice';
 import UserProfile from './Pages/UserProfile';
 import AllInventory from './Pages/AllInventory';
 import EditUser from './Pages/EditUser';
+import CreateInventory from './Pages/CreateInventory';
+import EditInventory from './Pages/EditInventory';
 
 function App() {
   return (
@@ -34,6 +36,8 @@ function App() {
         <Route exact path="/editar-categoria" element={<EditCategory/>}/>
         <Route exact path="/crear-sucursal" element={<CreateBranchOffice/>}/>
         <Route exact path="/editar-sucursal" element={<EditBranchOffice/>}/>
+        <Route exact path="/crear-inventario" element={<CreateInventory/>}/>
+        <Route exact path="/editar-inventario" element={<EditInventory/>}/>
         <Route exact path="/perfil" element={<UserProfile/>}/>
       </Routes>
     </Fragment>

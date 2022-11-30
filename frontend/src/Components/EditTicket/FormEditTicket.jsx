@@ -48,6 +48,10 @@ export default function FormEditTicket() {
             <Grid xs={12} mt={5} mb={2}>
             <Button fullWidth variant='contained' color='warning' onClick={navigateURL('/ver-ticket?id=123')}>Editar reporte</Button>
             </Grid>
+
+            <Grid xs={12} mt={5} mb={2}>
+            <Button fullWidth variant='contained' onClick={navigateURL('/')} color={"error"}>Eliminar Inventario</Button>
+            </Grid>
             </Grid>
         </Grid>
         

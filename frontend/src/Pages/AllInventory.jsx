@@ -6,18 +6,43 @@ import { Container } from '@mui/system';
 import AllTicketsTable from '../Components/AllTickets/AllTicketsTable';
 import AllInventoryTable from '../Components/AllInventory/AllInventoryTable';
 import { useNavigate } from 'react-router-dom';
+import { getFromId } from '../Services/UserServices';
+import CookieManagement from '../Utils/CookieManagement';
+import { useState } from 'react';
+import { useEffect } from 'react';
+
+const cookie = new CookieManagement();
 
 export default function AllInventory() {
-    const navigate = useNavigate();
     const [category, setCategory] = React.useState('');
 
   const handleCategory = (event) => {
     setCategory(event.target.value);
     navigate('/ver-inventarios?categoria=' + event.target.value);
   };
+
+  const [user, setUser] = useState({});
+  const navigate = useNavigate();
+
+  async function getFromIdFunction(id){
+    const res = await getFromId(id);
+    setUser(res.data);
+  }
+
+  useEffect(()=>{
+    const id = cookie.getCookie("id");
+    if(id){
+      getFromIdFunction(id);
+    }else{
+      navigate('/iniciar-sesion');
+    }
+  },[])
+
+  if (!Object.keys(user).length) return (<h1></h1>)
+
   return (
     <Fragment>
-        <LoggedBar/>
+        <LoggedBar user={user} />
         <Container maxWidth="xl" sx={{mt: 4, mb: 4}}>
         <Grid container
         direction="row"

@@ -1,41 +1,45 @@
 import { Grid, Paper, Typography } from '@mui/material'
 import { Container } from '@mui/system'
 import React, { Fragment } from 'react'
-import { useEffect } from 'react'
 import { useState } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import FormCreateBranchOffice from '../Components/CreateBranchOffice/FormCreateBranchOffice'
+import FormCreateInventory from '../Components/CreateInventory/FormCreateInventory'
+import FormCreateTicket from '../Components/CreateTicket/FormCreateTicket'
+import Footer from '../Components/Footer'
 import LoggedBar from '../Components/Navbar/LoggedBar'
 import { getFromId } from '../Services/UserServices'
 import CookieManagement from '../Utils/CookieManagement'
 
 const cookie = new CookieManagement();
 
-export default function CreateBranchOffice() {
-
-  const [user, setUser] = useState({});
-  const navigate = useNavigate();
+export default function CreateInventory() {
+  const [user, setUser] = useState({})
+  const navigate = useNavigate()
 
   async function getFromIdFunction(id){
     const res = await getFromId(id);
     setUser(res.data);
   }
 
-  useEffect(()=>{
+
+
+  useEffect(() => {
     const id = cookie.getCookie("id");
     if(id){
-      getFromIdFunction(id);
+      getFromIdFunction(id)
     }else{
       navigate('/iniciar-sesion');
     }
-  },[])
 
+    
+    
+  }, [])
   if (!Object.keys(user).length) return (<h1></h1>)
-
   return (
     <Fragment>
       <LoggedBar user={user} />
-      <Container maxWidth="md" sx={{mt: 4, mb: 4}}>
+      <Container maxWidth="xl" sx={{mt: 4, mb: 4}}>
         <Grid container spacing={3} justifyContent="center"
   alignItems="center">
 
@@ -52,13 +56,14 @@ export default function CreateBranchOffice() {
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',}}>
-                    Crear Sucursal
+                    Crear Inventario
                   </Typography>
-                  <FormCreateBranchOffice/>
+                  <FormCreateInventory user={user} />
                 </Paper>
         </Grid>
 
         </Grid>
+        <Footer sucursal={user._sucursal.name} sx={{pt:4}} />
         </Container>
     </Fragment>
   )

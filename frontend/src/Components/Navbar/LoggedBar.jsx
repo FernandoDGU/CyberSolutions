@@ -2,12 +2,18 @@ import * as React from 'react';
 
 import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, Avatar, Box, Button, Container, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography } from '@mui/material';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useNavigate } from 'react-router-dom';
+import CookieManagement from '../../Utils/CookieManagement';
+import UserData from '../UserProfile/UserData';
 
 const pages = ['Ver reportes', 'Ver inventario', 'Crear reporte'];
 const settings = ['Perfil', 'Crear usuario', 'Salir'];
+const settingsAdmin = ['Crear sucursal', 'Crear categoría'];
 
-export default function LoggedBar() {
+const cookie = new CookieManagement();
+
+export default function LoggedBar(props) {
 
     const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -20,6 +26,8 @@ export default function LoggedBar() {
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
+
+  console.log(props.user)
 
   const handleCloseNavMenu = page => () => {
     
@@ -49,11 +57,21 @@ export default function LoggedBar() {
       break;
 
       case 'Salir':
+        cookie.deleteCookie("id");
+        cookie.deleteCookie("sucursal");
         navigate('/iniciar-sesion');
       break;
 
       case 'Crear usuario':
         navigate('/registrar-usuario');
+      break;
+
+      case 'Crear sucursal':
+        navigate('/crear-sucursal');
+      break;
+
+      case 'Crear categoría':
+        navigate('/crear-categoria');
       break;
 
       default:
@@ -151,7 +169,7 @@ export default function LoggedBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <AccountCircleIcon sx={{ color: 'white' }}/>
               </IconButton>
             </Tooltip>
             <Menu
@@ -175,6 +193,15 @@ export default function LoggedBar() {
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
+               {
+                settingsAdmin.map((setting) => {
+                  return props.user.userType === 1 ? (
+                    <MenuItem key={setting} onClick={handleCloseUserMenu(setting)}>
+                      <Typography textAlign="center">{setting}</Typography>
+                    </MenuItem>
+                  ) : ""
+                })
+              }
             </Menu>
           </Box>
         </Toolbar>

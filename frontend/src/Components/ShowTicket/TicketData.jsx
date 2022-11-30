@@ -1,16 +1,28 @@
 import { Grid, Paper, Typography } from '@mui/material'
 import React, { Fragment } from 'react'
+import { useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
+import { reformatDate } from '../../Utils/DateManagement';
 
-export default function TicketData() {
+export default function TicketData(props) {
     const navigate = useNavigate();
+    const [color, setColor] = useState("")
     const navigateURL = url => () => {
         navigate(url)
     }
+
+    useEffect(()=>{
+        if(props.reporte.state === "cerrado")
+            setColor("blue")
+        else
+            setColor("red")
+    }, [])
+
   return (
     <Fragment>
         <Typography variant="subtitle2" gutterBottom>
-            2022/10/23
+            {reformatDate(props.reporte.startDate)}
         </Typography>
         <Grid container
         direction="column"
@@ -27,18 +39,18 @@ export default function TicketData() {
                     backgroundColor:'#F9F9F9'
                   }}
                 >
-                 <a onClick={navigateURL('/perfil?id=' + '12')} href='javascript:void(0)'>
+                 <a onClick={navigateURL('/perfil?id=' + props.reporte._user._id)} href='javascript:void(0)'>
                     <Typography variant='h5' textAlign={"center"}>
-                        Darien Sánchez
+                        {props.reporte._user.name}
                     </Typography>
                 </a>
 
                 <Typography variant='subtitle1' textAlign={"center"} mt={1}>
-                        sadarien@gmail.com
+                        {props.reporte._user.email}
                 </Typography>
 
                 <Typography variant='subtitle2' textAlign={"center"} mt={1}>
-                        81-17-94-92-20
+                        {props.reporte._user.phoneNumber}
                 </Typography>
                 </Paper>
                 
@@ -48,15 +60,15 @@ export default function TicketData() {
             </Grid>
         </Grid>
         <Typography variant="subtitle1" gutterBottom mb={2}>
-            Estado del ticket: <Typography color={"red"}>Abierto</Typography>
+            Estado del ticket: <Typography color={color}> {props.reporte.state} </Typography>
         </Typography>
 
         <Typography variant="subtitle1" gutterBottom mb={2}>
-            Número de comentarios: <Typography>52</Typography>
+            Número de comentarios: <Typography> {props.numComentarios} </Typography>
         </Typography>
 
         <Typography variant="subtitle1" gutterBottom>
-            Último comentario de: <a onClick={navigateURL('/perfil?id=' + '12')} href='javascript:void(0)'><Typography>Darien Sánchez</Typography></a>
+            Categoria: <Typography> {props.reporte._category.name} </Typography>
         </Typography>
     </Fragment>
   )

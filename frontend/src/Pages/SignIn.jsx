@@ -1,36 +1,58 @@
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { FormControl, InputLabel, MenuItem, Paper, Select } from '@mui/material';
+import { Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import CookieManagement from '../Utils/CookieManagement';
+import { useEffect } from 'react';
+import { LogIn } from '../Services/UserServices';
+
+const cookie = new CookieManagement();
 
 const theme = createTheme();
 
 export default function SignIn() {
   const navigate = useNavigate();
 
-  const navigateURL = url => () => {
-    navigate(url);
-  }
-    const handleSubmit = (event) => {
+  useEffect(()=>{
+    const id = cookie.getCookie("id");
+    if(id){
+      navigate('/');
+    }else{
+      
+    }
+  },[])
+
+    const handleSubmit = url => (event) => {
         event.preventDefault();
+        const loginError = document.getElementById("login-error");
+        loginError.textContent = "";
         const data = new FormData(event.currentTarget);
-        console.log({
-          email: data.get('email'),
+        const logInData = {
+          email: data.get("email"),
           password: data.get('password'),
-        });
+        }
+
+        async function LogInFunction(data){
+          const res = await LogIn(data);
+          if(res.success){
+            cookie.setCookie("id", res.data._id);
+            cookie.setCookie("sucursal", res.data._sucursal._id);
+            navigate('/');
+          }else{
+            loginError.textContent = res.response.data.message;
+          }
+        }
+
+        LogInFunction(logInData);
+        //navigate(url);
       };
+
   return (
     <ThemeProvider theme={theme}>
         
@@ -71,7 +93,7 @@ export default function SignIn() {
           >
             CYBERSOLUTIONS
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box component="form" onSubmit={handleSubmit('/')} sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -97,10 +119,10 @@ export default function SignIn() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              onClick={navigateURL('/')}
             >
               ENTRAR
             </Button>
+            <Typography id="login-error" variant="caption" color={"red"}></Typography>
             {/* <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">

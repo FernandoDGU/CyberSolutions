@@ -11,7 +11,7 @@ export default function CreateComment() {
       };
   return (
     <Fragment>
-        <Grid container justifyContent={"center"} alignItems={"center"}>
+        <Grid container justifyContent={"center"} alignItems={"center"} sx={{mt:5}}>
             <Grid item xs={10}>
             <TextField
           id="outlined-multiline-flexible"

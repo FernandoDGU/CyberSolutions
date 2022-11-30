@@ -15,8 +15,8 @@ class ComentariosService {
 
   async createDB(data) {
     const model = new ComentariosModel(data);
-    await model.save();
-    return data;
+    await (await model.save()).populate('_user');
+    return model;
   }
 
   async findOneDB(id) {
@@ -72,7 +72,7 @@ class ComentariosService {
     try {
       const comentarios = await ComentariosModel.find({
         _reportes: id
-      });
+      }).sort({"_id" : -1}).populate('_user');
       if (!comentarios)
         throw boom.notFound('No se han encontrado coincidencias');
       return comentarios;
